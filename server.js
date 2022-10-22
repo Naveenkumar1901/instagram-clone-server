@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/register", registerRoute);
 app.use("/login", loginRoute);
-app.use("/posts", postRoutes);
+app.use("/post", postRoutes);
 
 mongoose
   .connect(process.env.MONGOURI)
