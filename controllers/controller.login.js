@@ -1,5 +1,22 @@
-module.exports.login = (req, res) => {
-  const { name, age } = req.body;
-  //database logic
-  res.send("sucessfully added to database");
+const userModel = require("../models/user.model");
+const bcrypt = require("bcrypt");
+
+module.exports.login = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email.length || !password?.length) {
+    res.status(400).send("missing Credentials");
+    return;
+  }
+  try {
+    const user = await userModel.findOne({ email });
+    const isUserValid = await bcrypt.compare(password, user.password);
+    if (isUserValid) res.status(200).send("logged in successfully");
+    else res.status(400).send("invalid credentials");
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      msg: "Internal Server Error",
+      err: err.message,
+    });
+  }
 };
