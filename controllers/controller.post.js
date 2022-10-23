@@ -47,7 +47,6 @@ module.exports.getAllPosts = async (_, res) => {
         },
       },
     ]);
-    console.log(posts);
     res.status(200).send(posts);
   } catch (error) {
     console.log(err.message);
@@ -58,12 +57,8 @@ module.exports.getAllPosts = async (_, res) => {
   }
 };
 module.exports.likePost = async (req, res) => {
-  const { postId, likedUserId } = req.body;
+  const { postId, newLikedArray } = req.body;
   try {
-    const post = await postModel.findById(postId);
-
-    const newLikedArray = [...post.likes, likedUserId];
-
     await postModel.findByIdAndUpdate(mongoose.Types.ObjectId(postId), {
       $set: { likes: newLikedArray },
     });
@@ -78,14 +73,9 @@ module.exports.likePost = async (req, res) => {
 };
 
 module.exports.commentPost = async (req, res) => {
-  const { postId, commentUserId, commmentContent } = req.body;
+  const { postId, newCommentArray } = req.body;
   try {
     const post = await postModel.findById(postId);
-
-    const newCommentArray = [
-      ...post.comment,
-      { commentUserId: commmentContent },
-    ];
 
     await postModel.findByIdAndUpdate(mongoose.Types.ObjectId(postId), {
       $set: { comment: newCommentArray },
