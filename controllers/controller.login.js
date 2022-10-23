@@ -10,7 +10,15 @@ module.exports.login = async (req, res) => {
   try {
     const user = await userModel.findOne({ email });
     const isUserValid = await bcrypt.compare(password, user.password);
-    if (isUserValid) res.status(200).send("logged in successfully");
+    if (isUserValid)
+      res.status(200).json({
+        msg: "logged in successfully",
+        user: {
+          name: user.name,
+          email: user.email,
+          id: user._id,
+        },
+      });
     else res.status(400).send("invalid credentials");
   } catch (err) {
     console.log(err);
