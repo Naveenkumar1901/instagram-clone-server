@@ -7,7 +7,7 @@ module.exports.register = async (req, res) => {
     /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
   if (
     name?.length === 0 ||
-    email.length?.length === 0 ||
+    email?.length === 0 ||
     password?.length < 6 ||
     !regExp.test(email)
   ) {
@@ -25,9 +25,16 @@ module.exports.register = async (req, res) => {
       password: hashedPassword,
     };
 
-    const user = new userModel(newUser);
-    await user.save();
-    res.status(200).send("sucessfully added to database");
+    const User = new userModel(newUser);
+    let registerdUser = await User.save();
+    res.status(200).json({
+      msg: "sucessfully registered",
+      user: {
+        name: registerdUser.name,
+        email: registerdUser.email,
+        id: registerdUser._id,
+      },
+    });
   } catch (err) {
     console.log(err.message);
     res.status(500).json({
