@@ -2,11 +2,11 @@ const postModel = require("../models/post.model");
 const mongoose = require("mongoose");
 
 module.exports.addPost = async (req, res) => {
-  const { caption, imgUrl, type, userId } = req.body;
+  const { caption, type, userId } = req.body;
   try {
     const newPost = new postModel({
       caption,
-      imgUrl,
+      imgUrl: req.file.buffer,
       type,
       userId: mongoose.Types.ObjectId(userId),
     });
@@ -46,9 +46,12 @@ module.exports.getAllPosts = async (_, res) => {
           as: "user",
         },
       },
+      {
+        $sort: { createdAt: -1},
+      },
     ]);
     res.status(200).send(posts);
-  } catch (error) {
+  } catch (err) {
     console.log(err.message);
     res.status(500).json({
       msg: "Internal server error",

@@ -3,11 +3,10 @@ const mongoose = require("mongoose");
 const Post = new mongoose.Schema(
   {
     caption: String,
-    image: String,
     likes: Array,
     comment: Array,
     type: String,
-    imgUrl: String,
+    imgUrl: Buffer,
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
   },
   {
